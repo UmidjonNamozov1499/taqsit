@@ -8,6 +8,7 @@ import com.example.taqsit.payload.AllApiResponse;
 import com.example.taqsit.payload.ResponseData;
 import com.example.taqsit.repository.PostRepository;
 import com.example.taqsit.repository.UserRepository;
+import javafx.geometry.Pos;
 import lombok.RequiredArgsConstructor;
 import org.apache.xmlbeans.impl.xb.xsdschema.All;
 import org.springframework.data.domain.Page;
@@ -83,49 +84,22 @@ public class PostService {
             if (user == null) {
                 return AllApiResponse.response(409, 0, "Not authentication user");
             }
-            List<Post> posts = postRepository.findAllByUser(user);
-            List<PostDto> postDtoList = new ArrayList<>();
-            for (Post post : posts) {
-                PostDto dto = new PostDto();
-                dto.setId(post.getId());
-                dto.setText(post.getText());
-                dto.setFileCategoryId(post.getFileCatalog().getId());
-                dto.setFileCategoryId(post.getFileCatalog().getId());
-                postDtoList.add(dto);
-            }
-
-            return AllApiResponse.response(200, "Successfully viewed posts", postDtoList);
+            Page<Post> posts = postRepository.findAllByUser(user,PageRequest.of(page-1,size));
+            return AllApiResponse.response(200, "Successfully viewed posts", new ResponseData(posts));
         } catch (Exception e) {
             e.printStackTrace();
             return AllApiResponse.response(500, 0, e.getMessage());
         }
     }
-
-    //    public Page<Post> convertListToPage(List<Post> posts, int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        int start = (int) pageable.getOffset();
-//        int end = Math.min((start + pageable.getPageSize()), posts.size());
-//
-//        // Sahifalanmagan ro‘yxatni Page ob'ektiga aylantirish
-//        return new PageImpl<>(posts.subList(start, end), pageable, posts.size());
-//    }
     public HttpEntity<?> postList(int page, int size) {
         try {
             User user = userService.currentUser();
             if (user == null) {
                 return AllApiResponse.response(409, 0, "Not authentication user");
             }
-            List<Post> posts = postRepository.findAll();
-            List<PostDto> postDtoList = new ArrayList<>();
-            for (Post post : posts) {
-                PostDto dto = new PostDto();
-                dto.setId(post.getId());
-                dto.setText(post.getText());
-                dto.setFileCategoryId(post.getFileCatalog().getId());
-                dto.setFileCategoryId(post.getFileCatalog().getId());
-                postDtoList.add(dto);
-            }
-            return AllApiResponse.response(200, "Successfully viewed posts", postDtoList);
+            Page<Post> posts = postRepository.findAll(PageRequest.of(page-1,size));
+
+            return AllApiResponse.response(200, "Successfully viewed posts", new ResponseData(posts));
         } catch (Exception e) {
             e.printStackTrace();
             return AllApiResponse.response(500, 0, e.getMessage());

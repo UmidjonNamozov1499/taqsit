@@ -32,7 +32,7 @@ public class Post extends BaseEntity {
         return new HashMap<>(){{
             put("text",text);
             put("likes",likes);
-            put("fileCatalog",fileCatalog);
+            put("fileCatalog",fileCatalog.toDto());
         }};
     }
 }

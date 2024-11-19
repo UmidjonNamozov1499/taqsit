@@ -52,11 +52,14 @@ public class DataLoader implements CommandLineRunner {
                     new Permission("Foydalanuvchi yaratish", "User controller", "Foydalanuvchilar", "create_user"),
                     new Permission("Foydalanuvchini olish", "User controller", "Foydalanuvchilar", "get_one_user"),
                     new Permission("Foydalanuvchini tahrirlash", "User controller", "Foydalanuvchilar", "update_user"),
-                    new Permission("Foydalanuvchini o'chirish", "User controller", "Foydalanuvchilar", "delete_user")
+                    new Permission("Foydalanuvchini o'chirish", "User controller", "Foydalanuvchilar", "delete_user"),
+
+                    new Permission("Postlarni olish", "Post controller", "posts", "get_all_posts")
             );
 
             List<Role> roles = List.of(
-                    new Role("admin", "Admin")
+                    new Role("admin", "Admin"),
+                    new Role("customer","Customer")
             );
 
             List<Permission> list = permissions.stream().map(item -> {
@@ -71,11 +74,15 @@ public class DataLoader implements CommandLineRunner {
                     if (role.getName().equals("admin")) {
                         role.setPermission(list);
                         role = roleRepository.save(role);
+                    }else {
+                        role.setPermission(list.stream().filter(p->p.getName().equals("get_all_posts")).toList());
                     }
                     return role;
                 } else {
                     if (item.getName().equals("admin")) {
                         item.setPermission(list);
+                    }else {
+                        item.setPermission(list.stream().filter(p->p.getName().equals("get_all_posts")).toList());
                     }
                     return roleRepository.save(item);
                 }

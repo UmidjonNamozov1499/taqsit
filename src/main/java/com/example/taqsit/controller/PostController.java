@@ -5,6 +5,7 @@ import com.example.taqsit.dto.UserDto;
 import com.example.taqsit.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,6 +32,7 @@ public class PostController {
         return postService.postViewUser(page, size);
     }
 
+    @PreAuthorize("hasAnyAuthority('get_all_posts')")
     @GetMapping("/getAll")
     public HttpEntity<?> getAll(
             @RequestParam(required = false, defaultValue = "1") int page,

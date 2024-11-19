@@ -59,7 +59,7 @@ public class UserDto {
         if (firstName == null) {
             errors.put("firstName", "Field is required!");
         }
-        if (id == null && password == null) {
+        if (password == null) {
             errors.put("password", "Field is required!");
         }
         return errors;
